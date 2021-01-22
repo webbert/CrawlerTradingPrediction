@@ -43,6 +43,14 @@ The cross-validation process is then repeated k times (the folds), with each of 
 
 <https://medium.com/auquan/https-medium-com-auquan-machine-learning-techniques-trading-b7120cee4f05>
 
-RMSE (ROOT MEAN SQUARED ERROR) = √Σ(y_actual - y_predicted)/number of samples
+RMSE (ROOT MEAN SQUARED ERROR) = √(Σ(y_actual - y_predicted))/number of samples
 
 TO DO: Fit transform. Different shape as seen in the x_train and y_train.
+
+## Progress Day 4 (22 Jan)
+
+Currently creating a LTSM machine learning model for prediction. 
+
+Length of scaled data = 3316
+We take approx 20 % of the data as testing.
+Followed by that we use 80% as training. 

@@ -21,7 +21,8 @@ def main(code):
     # df = pd.read_csv('LENDLEASE info max.csv')
     x = fp.predict_obj(max_info)
     # x.graph()
-    df = x.predict_test_1()
+    df = x.predict_test_3()
+    print(df)
     # x.write_to_csv("LENDLEASE info max")
 
 
