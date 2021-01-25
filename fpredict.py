@@ -127,7 +127,7 @@ class predict_obj():
         x_train, y_train, start_point = create_x_y(split_sec_one, 0.2)
 
         # Second part for y_train, x_test
-        # x_test, y_test = create_x_y(split_sec_two, 0.2)
+        x_test, y_test = create_x_y(split_sec_two, 0.2)
 
         # reshaping the data to fit a another dimension
         x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
@@ -142,19 +142,18 @@ class predict_obj():
         model.fit(x_train, y_train, epochs=1, batch_size=1, verbose=1)
         model.save("model.h5")
 
-        # x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
 
         inputs = data_df[len(data_df) -
                          len(split_sec_two) - start_point:].values
         inputs = inputs.reshape(-1, 1)
         inputs = scaler.transform(inputs)
 
-        # x_test = []
-        # for i in range(start_point, inputs.shape[0]):
-        #     x_test.append(inputs[i-start_point:i, 0])
-        # x_test = np.array(x_test)
+        x_test = []
+        for i in range(start_point, inputs.shape[0]):
+            x_test.append(inputs[i-start_point:i, 0])
+        x_test = np.array(x_test)
 
-        # x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
+        x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
 
         y_hat = model.predict(x_train)
 

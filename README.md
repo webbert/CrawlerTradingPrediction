@@ -54,3 +54,4 @@ Currently creating a LTSM machine learning model for prediction.
 Length of scaled data = 3316
 We take approx 20 % of the data as testing.
 Followed by that we use 80% as training. 
+<https://www.analyticsvidhya.com/blog/2018/10/predicting-stock-price-machine-learningnd-deep-learning-techniques-python/>
