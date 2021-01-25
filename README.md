@@ -13,7 +13,9 @@ Coming up with a trading bot and predicting the future
 ## Progress Day 1 (13 Jan 2021)
 
 Yfinance API <https://pypi.org/project/yfinance/>
+
 Alphavantage Documentation <https://www.alphavantage.co/documentation/>
+
 Trading Strategies:
 <https://www.investopedia.com/articles/trading/06/daytradingretail.asp>
 <https://www.investopedia.com/articles/active-trading/090415/only-take-trade-if-it-passes-5step-test.asp>
