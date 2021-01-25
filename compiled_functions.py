@@ -23,16 +23,13 @@ def create_features(data, window_size):
     return np.array(split_sec_one), np.array(split_sec_two)
 
 
-def create_x_y(data, window_size):
-    # start_point = int(input(
-    #     f"Data length is {len(data)}.\nWhere would you want to start? (Default=1): ") or "1")
-    start_point = len(data) - int(len(data)*float(window_size))
-    x_train, y_train = [], []
-    for index in range((int(start_point)), len(data)):
-        x_train.append(data[(index-start_point):index, 0])
-        y_train.append(data[index, 0])
-    x_train, y_train = np.array(x_train), np.array(y_train)
-    return x_train, y_train, start_point
+def create_data(seg_data, scaled_data, size):
+    x, y = [], []
+    for i in range(60,len(seg_data)):
+        x.append(scaled_data[i-60:i,0])
+        y.append(scaled_data[i,0])
+    x, y = np.array(x), np.array(y)
+    return x, y
 
 
 def isleak(shape, train_shape, test_shape):
