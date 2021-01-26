@@ -70,7 +70,7 @@ Need to format the code and understand the splitting functions and the arrays.
 
 ![Image of the test done for Prediction of Stocks](lendlease_prediction.png)
 
-## Progres Day 6 (26 Jan)
+## Progress Day 6 (26 Jan)
 
 Bugs Found:
 
