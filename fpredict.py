@@ -2,24 +2,26 @@
 predictions over a time period.
 """
 
-from compiled_functions import create_features, isleak, create_data
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.cluster import KMeans
-from sklearn.metrics import mean_squared_error
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from keras.callbacks import ModelCheckpoint
-from keras.layers import Dense, LSTM, Dropout
-from keras.models import Sequential, load_model
-from tensorflow.keras import activations
-import time
-import tensorflow as tf
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
 import os
+# switch off tensorflow warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = "3"
+import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+# switch off pandas warnings
+pd.set_option('mode.chained_assignment', None)
+import tensorflow as tf
+import time
+from keras.models import Sequential
+from keras.layers import Dense, LSTM, Dropout
+from keras.callbacks import ModelCheckpoint
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from compiled_functions import create_features, isleak, create_data
+
+
+INDEX_ZERO = 0
+INDEX_ONE = 1
 
 
 class predict_obj():
@@ -50,6 +52,8 @@ class predict_obj():
         return f"Data written to {file_path}"
 
     def graph(self):
+        """This graph gives an overview of the stock dataframe for the purpose
+        """
         yf_df = self.yf_object
         yf_df['avg'] = yf_df[['Open', 'Close']].mean(axis=1)
         x_axis = yf_df.index
@@ -60,109 +64,86 @@ class predict_obj():
         plt.title('Graph to show the average buy price per date')
         plt.show()
 
-    def predict_test_1(self):
+    def predict_test_3(self, no_of_days, code):
         yf_df = self.yf_object
-        # create new columns in the data frame that contain data with one day lag.
-        yf_df['open'] = yf_df['Open'].shift(1)
-        yf_df['high'] = yf_df['High'].shift(1)
-        yf_df['low'] = yf_df['Low'].shift(1)
-        yf_df['close'] = yf_df['Close'].shift(1)
-        # Fills NaN values with Mean and drop the first row
-        # Reason for dropping first row due to the shifts
-        yf_df = yf_df.fillna(yf_df.mean())
-        yf_df = yf_df.drop(yf_df.index[0])
-        x_axis = yf_df[['open', 'high', 'low', 'Close']]
-        y_axis = yf_df['Close']
+        self.no_of_days = no_of_days
+        self.code = code
 
-        # TrainTestSplit and scale data
-
-        x_train, x_test, y_train, y_test = train_test_split(
-            x_axis, y_axis, test_size=0.2, shuffle=False)
-
-        # Kmeans
-        kmeans_model = KMeans()
-        trained_kmeans = kmeans_model.fit(x_train, y_train)
-
-        # Predict y_hat
-        y_hat = trained_kmeans.predict(x_test)
-        y_train = np.array(y_train)
-        y_test = np.array(y_test)
-        y_actual = np.concatenate([y_train, y_test])
-        y_predicted = np.concatenate([y_train, y_hat])
-        # fig, (ax0, ax1) = plt.subplots(ncols=2)
-        rms = np.sqrt(np.mean(np.power((np.array(y_test)-np.array(y_hat)), 2)))
-        print(rms)
-        plt.plot(yf_df.index, y_actual)
-        plt.plot(yf_df.index, y_predicted)
-        plt.show()
-        # return
-
-    def predict_test_3(self):
-        yf_df = self.yf_object
-        # Creates a new dataframe
+        # Creates a new dataframe and filters relevant columns
         yf_df = yf_df.reset_index()
         data_df = yf_df[['Date', 'Close']]
 
-        # Changes the index using the Date column and drops the Date column for no duplicates
+        # Changes the index using the Date column and drops the Date column
+        # for no duplicates
         data_df.index = data_df['Date']
         data_df = data_df.drop('Date', axis=1)
 
-        # Transform into a 1-D array
+        # Transform into a 1-D array and scales the data based on the scalar
         scaler = MinMaxScaler(feature_range=(0, 1))
         scaled_data = scaler.fit_transform(data_df)
-        
-        # Splitting the data to 2 parts for testing
-        # 0.4 = 40% of the data which will be converted to INT
-        # split_sec_one, split_sec_two = create_features(scaled_data, 0.2)
 
-        split_sec_one = scaled_data[0:120]
-        split_sec_two = scaled_data[120:]
-        training_data = np.reshape(split_sec_one, (split_sec_one.shape[0], -1))
-        validation = np.reshape(split_sec_two, (split_sec_two.shape[0], -1))
-        # Checks if there is a leak or inconsistent number of data if False means no leak
-        print(isleak(scaled_data.shape, split_sec_one.shape, split_sec_two.shape))
+        # Splitting the data to 2 parts for training and validation
+        windows_size = no_of_days*2
+        split_sec_one, split_sec_two = create_features(
+            scaled_data, windows_size)
+        training_data = np.reshape(
+            split_sec_one, (split_sec_one.shape[INDEX_ZERO], -1))
+        validation = np.reshape(
+            split_sec_two, (split_sec_two.shape[INDEX_ZERO], -1))
+        # Checks if there is a leak or inconsistent number of data if False
+        # means no leak
+        print(isleak(scaled_data.shape, split_sec_one.shape,
+                     split_sec_two.shape))
         time.sleep(1)
 
-        # First part split is for train_x and x_test
+        # First part split is for training data to split x and y
         # NOTE: TO add in a feature to allow the user to specify the
-        # window size of the data to be used
-        x_train, y_train = create_data(training_data, split_sec_one, 60)
+        # no of days of the data that will be used
+        x_train, y_train = create_data(
+            training_data, no_of_days)
 
-        # reshaping the data to fit a another dimension
-        x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
+        # reshaping the data to fit the LSTM as LSTM must have a 3-Dimensional
+        # data shape (*, *, *)
+        x_train = np.reshape(
+            x_train, (x_train.shape[INDEX_ZERO], x_train.shape[INDEX_ONE], 1))
         # Creating LSTM model
         model = Sequential()
         model.add(LSTM(units=50, return_sequences=True,
                        input_shape=(x_train.shape[1], 1)))
         model.add(LSTM(units=50))
-        model.add(Dense(1,  activation=activations.relu))
+        model.add(Dense(1))
 
+        # mse = mean squared error, optimizer Adam
         model.compile(loss='mse', optimizer='Adam')
-        model.fit(x_train, y_train, epochs=1, batch_size=1, verbose=1)
-        model.save("model.h5")
 
+        # Epochs number to train...
+        model.fit(x_train, y_train, epochs=1, batch_size=1, verbose=0)
 
+        # NOTE: Saves the model --> need to add a feature for option
+        # model.save(f"{code}_model.h5")
+
+        # Takes the total number of values from the split. This is to take a
+        # certain number of days for testing a y value in the validation.
         inputs = data_df[len(data_df) -
-                         len(validation) - 60:].values
+                         len(validation) - no_of_days:].values
         inputs = inputs.reshape(-1, 1)
         inputs = scaler.transform(inputs)
 
+        # Creates the test array for the number of days
         x_test = []
-        for i in range(60, inputs.shape[0]):
-            x_test.append(inputs[i-60:i, 0])
+        for i in range(no_of_days, inputs.shape[0]):
+            x_test.append(inputs[i-no_of_days:i, 0])
         x_test = np.array(x_test)
 
+        # Reshapes the data to fit the LSTM model
         x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
 
         y_hat = model.predict(x_test)
         predicted_closing_price = scaler.inverse_transform(y_hat)
 
-        split_one = data_df[:120]
-        split_two = data_df[120:]
-        print(split_two.shape, len(predicted_closing_price))
-        split_two['Predicted_Close'] = predicted_closing_price
+        split_one = data_df[:windows_size]
+        split_two = data_df[windows_size:]
+        split_two.loc[:, 'Predicted_Close'] = predicted_closing_price
         plt.plot(split_one['Close'])
         plt.plot(split_two[['Close', 'Predicted_Close']])
         plt.show()
-
-        return y_hat

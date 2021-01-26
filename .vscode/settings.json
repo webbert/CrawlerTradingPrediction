@@ -1,5 +1,11 @@
 {
-    "python.linting.pylintEnabled": true,
+    "python.linting.pylintEnabled": false,
     "python.linting.enabled": true,
-    "python.linting.pycodestyleEnabled": false
+    "python.linting.pycodestyleEnabled": false,
+    "python.formatting.provider": "autopep8",
+    "python.formatting.autopep8Args": [
+        "--max-line-length=79"
+    ],
+    "python.linting.pydocstyleEnabled": false,
+    "python.linting.flake8Enabled": true
 }
