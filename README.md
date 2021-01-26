@@ -54,11 +54,11 @@ TO DO: Fit transform. Different shape as seen in the x_train and y_train.
 
 ## Progress Day 4 (22 Jan)
 
-Currently creating a LTSM machine learning model for prediction. 
+Currently creating a LTSM machine learning model for prediction.
 
 Length of scaled data = 3316
 We take approx 20 % of the data as testing.
-Followed by that we use 80% as training. 
+Followed by that we use 80% as training.
 <https://www.analyticsvidhya.com/blog/2018/10/predicting-stock-price-machine-learningnd-deep-learning-techniques-python/>
 
 ## Progress Day 5 (25 Jan)
@@ -75,3 +75,11 @@ Need to format the code and understand the splitting functions and the arrays.
 Bugs Found:
 
 1. Noticed that if the data exceeds a certain number of days based on the split section, it cannot run.
+
+Need to understand the logic for the inputs areas.
+
+Made modifications to the predict method in the class.
+
+__TO DO:__
+
+To create more efficient code layout and start making a plan for the project
