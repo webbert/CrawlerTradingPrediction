@@ -15,7 +15,7 @@ def parse_arguments():
 def main(code):
     # Retrieve pandas dataframe information of stocks/REITs
     yf_object = yf.Ticker(code)
-    max_info = yf_object.history(period="Max")
+    max_info = yf_object.history(period="1Y")
 
     # Use CSV to retrieve info
     # df = pd.read_csv('LENDLEASE info max.csv')

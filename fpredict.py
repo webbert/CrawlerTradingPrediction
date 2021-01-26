@@ -111,7 +111,6 @@ class predict_obj():
         scaler = MinMaxScaler(feature_range=(0, 1))
         scaled_data = scaler.fit_transform(data_df)
         
-
         # Splitting the data to 2 parts for testing
         # 0.4 = 40% of the data which will be converted to INT
         # split_sec_one, split_sec_two = create_features(scaled_data, 0.2)
