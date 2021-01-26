@@ -17,7 +17,9 @@ Yfinance API <https://pypi.org/project/yfinance/>
 Alphavantage Documentation <https://www.alphavantage.co/documentation/>
 
 Trading Strategies:
+
 <https://www.investopedia.com/articles/trading/06/daytradingretail.asp>
+
 <https://www.investopedia.com/articles/active-trading/090415/only-take-trade-if-it-passes-5step-test.asp>
 
 Reits:
@@ -26,6 +28,7 @@ Lendlease <https://sg.finance.yahoo.com/quote/JYEU.SI?p=JYEU.SI&.tsrc=fin-srch>
 ## Progress day 2 (14 Jan 2021)
 
 How to create trading prediction <https://blog.quantinsti.com/trading-using-machine-learning-python/#prereq>
+
 Randomised Search CV for Hyperparameter <https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html>
 
 ### MODEL USED FOR PREDICTION:
@@ -66,3 +69,9 @@ Currently working well.
 Need to format the code and understand the splitting functions and the arrays.
 
 ![Image of the test done for Prediction of Stocks](lendlease_prediction.png)
+
+## Progres Day 6 (26 Jan)
+
+Bugs Found:
+
+1. Noticed that if the data exceeds a certain number of days based on the split section, it cannot run.
