@@ -13,20 +13,32 @@ import pandas as pd
 pd.set_option('mode.chained_assignment', None)
 import tensorflow as tf
 import time
+import yfinance as yf
+from . import errors
 from keras.models import Sequential
 from keras.layers import Dense, LSTM, Dropout
 from keras.callbacks import ModelCheckpoint
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from funcs import create_features, isleak, create_data
+from .funcs import create_features, isleak, create_data
 
 
 INDEX_ZERO = 0
 INDEX_ONE = 1
 
+TIMECODES = ['1D', '5D', '1M', '6M', 'YTD', '1Y', '5Y', 'MAX']
 
-class test_predict():
-    def __init__(self, yf_object):
-        self.yf_object = yf_object
+
+class Crawl():
+    def __init__(self, code, timespan):
+        try:
+            yf_object = yf.Ticker(code)
+            yf_df = yf_object.history(period=timespan)
+            if timespan not in timespan:
+                raise errors.YahooFinanceCodeDoesNotExist(code, TIMECODES)
+            # Dataframe object
+            self.yf_df = yf_df
+        except KeyboardInterrupt:
+            exit()
 
     def __repr__(self):
         """Displays the object that has been initialized into the class.
@@ -36,10 +48,9 @@ class test_predict():
         """
         return "<Yahoo Finance object>"
 
-    def predict_LSTM(self, no_of_days, code):
-        yf_df = self.yf_object
+    def predict_(self, no_of_days):
+        yf_df = self.yf_df
         self.no_of_days = no_of_days
-        self.code = code
 
         # Creates a new dataframe and filters relevant columns
         yf_df = yf_df.reset_index()
