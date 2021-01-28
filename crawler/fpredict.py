@@ -17,14 +17,14 @@ from keras.models import Sequential
 from keras.layers import Dense, LSTM, Dropout
 from keras.callbacks import ModelCheckpoint
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from compiled_functions import create_features, isleak, create_data
+from funcs import create_features, isleak, create_data
 
 
 INDEX_ZERO = 0
 INDEX_ONE = 1
 
 
-class predict_obj():
+class test_predict():
     def __init__(self, yf_object):
         self.yf_object = yf_object
 
@@ -36,35 +36,7 @@ class predict_obj():
         """
         return "<Yahoo Finance object>"
 
-    def write_to_csv(self, name):
-        """Write the data from the yfianance pandas dataframe object to a CSV
-        file.
-
-        Args:
-            name (Str): Name to be used for the file
-
-        Returns:
-            Str: Prints the location of where the file has been created.
-        """
-        object = self.yf_object
-        file_path = os.getcwd() + '\\' + name + '.csv'
-        object.to_csv(file_path, index=False)
-        return f"Data written to {file_path}"
-
-    def graph(self):
-        """This graph gives an overview of the stock dataframe for the purpose
-        """
-        yf_df = self.yf_object
-        yf_df['avg'] = yf_df[['Open', 'Close']].mean(axis=1)
-        x_axis = yf_df.index
-        y_axis = yf_df['avg']
-        plt.scatter(x_axis, y_axis, s=5, c='g')
-        plt.xlabel('Date')
-        plt.ylabel('Avg Cost')
-        plt.title('Graph to show the average buy price per date')
-        plt.show()
-
-    def predict_test_3(self, no_of_days, code):
+    def predict_LSTM(self, no_of_days, code):
         yf_df = self.yf_object
         self.no_of_days = no_of_days
         self.code = code
@@ -117,7 +89,7 @@ class predict_obj():
         model.compile(loss='mse', optimizer='Adam')
 
         # Epochs number to train...
-        model.fit(x_train, y_train, epochs=1, batch_size=1, verbose=0)
+        model.fit(x_train, y_train, epochs=50, batch_size=1, verbose=0)
 
         # NOTE: Saves the model --> need to add a feature for option
         # model.save(f"{code}_model.h5")

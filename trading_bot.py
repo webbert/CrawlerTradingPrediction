@@ -1,11 +1,12 @@
 import argparse
 import yfinance as yf
-import fpredict as fp
+import crawler.fpredict as fp
 import pandas as pd
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="Trading prediction and bot tool")
     parser.add_argument('-c', '--code', type=str,
                         dest='code', help="Code based on YAHOO Finance.")
     arg = parser.parse_args()
