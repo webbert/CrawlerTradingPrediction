@@ -1,4 +1,5 @@
-"""fpredict take in a yfinance object and determine the
+"""
+fpredict take in a yfinance object and determine the
 predictions over a time period.
 """
 
@@ -24,19 +25,32 @@ from .funcs import create_features, isleak, create_data
 
 INDEX_ZERO = 0
 INDEX_ONE = 1
-
 TIMECODES = ['1D', '5D', '1M', '6M', 'YTD', '1Y', '5Y', 'MAX']
 
 
 class Crawl():
-    def __init__(self, code, timespan):
+    def __init__(self, code=None, filename=None, timespan=TIMECODES[7],
+                 save=False, verbose=0, output_graph=True, filepath=None):
         try:
-            yf_object = yf.Ticker(code)
-            yf_df = yf_object.history(period=timespan)
-            if timespan not in timespan:
+            # Time span check
+            if timespan not in TIMECODES:
                 raise errors.YahooFinanceCodeDoesNotExist(code, TIMECODES)
-            # Dataframe object
+            # Checking Code or Filename option
+            if code is not None:
+                yf_object = yf.Ticker(code)
+                yf_df = yf_object.history(period=timespan)
+            elif filename is not None:
+                yf_df = pd.read_csv(filename)
+            elif filename is not None and code is not None:
+                raise ValueError("You can either chooise code or filename.")
+
+            # Initialising items
             self.yf_df = yf_df
+            self.timespan = timespan
+            self.save = save
+            self.verbose = verbose
+            self.output_graph = output_graph
+            self.filepath = filepath
         except KeyboardInterrupt:
             exit()
 
@@ -46,9 +60,19 @@ class Crawl():
         Returns:
             Str: Object used in the class
         """
-        return "<Yahoo Finance object>"
+        return "<Crawler Object>"
 
-    def predict_(self, no_of_days):
+    def view_graph(self, df, windows_size, predicted):
+        print("Creating Visual Graph...")
+        split_one = df[:windows_size]
+        split_two = df[windows_size:]
+        split_two.loc[:, 'Predicted_Close'] = predicted
+        plt.plot(split_one['Close'])
+        plt.plot(split_two[['Close', 'Predicted_Close']])
+        print("Opening Graph. Close the Graph to Continue.")
+        plt.show()
+
+    def predict_(self, no_of_days=60):
         yf_df = self.yf_df
         self.no_of_days = no_of_days
 
@@ -124,9 +148,17 @@ class Crawl():
         y_hat = model.predict(x_test)
         predicted_closing_price = scaler.inverse_transform(y_hat)
 
-        split_one = data_df[:windows_size]
-        split_two = data_df[windows_size:]
-        split_two.loc[:, 'Predicted_Close'] = predicted_closing_price
-        plt.plot(split_one['Close'])
-        plt.plot(split_two[['Close', 'Predicted_Close']])
-        plt.show()
+        # print graph
+        if self.output_graph:
+            self.view_graph(data_df, windows_size, predicted_closing_price)
+
+        # Saves the model
+        if self.save and self.filepath is None:
+            current_filepath = os.getcwd() + f"{self.code}_model.sav"
+            model.save(current_filepath)
+            print(f"Saved model at {current_filepath}.")
+        elif self.save and self.filepath is not None:
+            model.save(self.filepath)
+            print(f"Saved model at {self.filepath}.")
+        
+        return self.__repr__
