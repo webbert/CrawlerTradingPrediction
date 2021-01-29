@@ -89,3 +89,13 @@ To create more efficient code layout and start making a plan for the project
 Made some reformatting to the main structure of the project.
 
 Want to learn how to make code and coding structure more professional and efficient.
+
+## Progress Day 8 (29 Jan)
+
+Created version number for product
+
+Bugs Found:
+
+1. Noticed that if the data exceeds a certain number of days based on the split section, it cannot run.
+
+- Need to find solution to be able to fit number of days and windows size
