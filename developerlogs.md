@@ -31,7 +31,7 @@ How to create trading prediction <https://blog.quantinsti.com/trading-using-mach
 
 Randomised Search CV for Hyperparameter <https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html>
 
-### MODEL USED FOR PREDICTION:
+### MODEL USED FOR PREDICTION
 
 Lasso <https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html>
 
@@ -99,3 +99,19 @@ Bugs Found:
 1. Noticed that if the data exceeds a certain number of days based on the split section, it cannot run.
 
 - Need to find solution to be able to fit number of days and windows size
+
+## Progress Day 9 (30 Jan)
+
+Different Periods and intervals and parameters
+
+1. Period: data period to download (Either Use period parameter or use start and end) Valid periods are: 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd, max
+2. Interval: data interval (intraday data cannot extend last 60 days) Valid intervals are: 1m, 2m, 5m, 15m, 30m, 60m, 90m, 1h, 1d, 5d, 1wk, 1mo, 3mo
+3. start: If not using period - Download start date string (YYYY-MM-DD) or datetime.
+4. end: If not using period - Download end date string (YYYY-MM-DD) or datetime
+5. prepost: Include Pre and Post market data in results? (Default is False
+6. auto_adjust: Adjust all OHLC automatically? (Default is True)
+7. actions: Download stock dividends and stock splits events? (Default is True)
+
+Keys for Information:
+
+dict_keys(['zip', '**sector**', 'fullTimeEmployees', 'longBusinessSummary', 'city', 'phone', 'country', 'companyOfficers', '**website**', 'maxAge', 'address1', 'industry', 'address2', '**previousClose**', '**regularMarketOpen**', '**twoHundredDayAverage**', '**trailingAnnualDividendYield**', 'payoutRatio', 'volume24Hr', '**regularMarketDayHigh**', 'navPrice', 'averageDailyVolume10Day', 'totalAssets', 'regularMarketPreviousClose', 'fiftyDayAverage', 'trailingAnnualDividendRate', 'open', 'toCurrency', 'averageVolume10days', 'expireDate', 'yield', 'algorithm', 'dividendRate', 'exDividendDate', 'beta', 'circulatingSupply', 'startDate', 'regularMarketDayLow', 'priceHint', '**currency**', 'regularMarketVolume', 'lastMarket', 'maxSupply', 'openInterest', 'marketCap', 'volumeAllCurrencies', 'strikePrice', 'averageVolume', 'priceToSalesTrailing12Months', 'dayLow', 'ask', 'ytdReturn', 'askSize', 'volume', 'fiftyTwoWeekHigh', 'forwardPE', 'fromCurrency', 'fiveYearAvgDividendYield', 'fiftyTwoWeekLow', 'bid', 'tradeable', 'dividendYield', 'bidSize', 'dayHigh', 'exchange', 'shortName', '**longName**', 'exchangeTimezoneName', 'exchangeTimezoneShortName', 'isEsgPopulated', 'gmtOffSetMilliseconds', 'quoteType', 'symbol', 'messageBoardId', 'market', 'annualHoldingsTurnover', 'enterpriseToRevenue', 'beta3Year', 'profitMargins', 'enterpriseToEbitda', '52WeekChange', 'morningStarRiskRating', 'forwardEps', 'revenueQuarterlyGrowth', 'sharesOutstanding', 'fundInceptionDate', 'annualReportExpenseRatio', 'bookValue', 'sharesShort', 'sharesPercentSharesOut', 'fundFamily', 'lastFiscalYearEnd', 'heldPercentInstitutions', 'netIncomeToCommon', 'trailingEps', 'lastDividendValue', 'SandP52WeekChange', 'priceToBook', 'heldPercentInsiders', 'nextFiscalYearEnd', 'mostRecentQuarter', 'shortRatio', 'sharesShortPreviousMonthDate', 'floatShares', 'enterpriseValue', 'threeYearAverageReturn', 'lastSplitDate', 'lastSplitFactor', 'legalType', 'lastDividendDate', 'morningStarOverallRating', 'earningsQuarterlyGrowth', 'dateShortInterest', 'pegRatio', 'lastCapGain', 'shortPercentOfFloat', 'sharesShortPriorMonth', 'impliedSharesOutstanding', 'category', 'fiveYearAverageReturn', 'regularMarketPrice', 'logo_url'])

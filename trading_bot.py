@@ -2,7 +2,7 @@ import argparse
 import Crawler.fpredict as fp
 import pandas as pd
 
-TIMECODES = ['1D', '5D', '1M', '6M', 'YTD', '1Y', '5Y', 'MAX']
+TIMECODES = ['1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']
 
 
 def parse_arguments():
@@ -19,16 +19,21 @@ def parse_arguments():
                         dest="time", choices=TIMECODES,
                         help=f"The time spans.\nChoices are as followed: \
                             {TIMECODES}", metavar="")
+    parser.add_argument('-m', '--model', dest='model',
+                        type=str, help='Input exisiting model folder',
+                        metavar='')
     arg = parser.parse_args()
-    return arg.code, arg.file, arg.time
+    return arg.code, arg.file, arg.time, arg.model
 
 
 def main():
-    code, filename, time = parse_arguments()
+    code, filename, time, model = parse_arguments()
     # Use CSV to retrieve info
     # df = pd.read_csv('LENDLEASE info max.csv')
-    x = fp.Crawl(code)
-    x.predict_()
+    # x = fp.Crawl(code, save=True, output_graph=False)
+    # x.model_dev()
+    x = fp.Crawl(code, model_name=model)
+    print(x.model_predict())
 
 
 if __name__ == '__main__':
