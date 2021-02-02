@@ -185,7 +185,7 @@ class Crawl():
 
         # Saves the model
         if self.save and self.filepath is None:
-            current_filepath = os.getcwd() + f"\{self.code}_model"
+            current_filepath = os.getcwd() + f"\\{self.code}_model"
             model.save(current_filepath)
             print(f"Saved model at {current_filepath}.")
         elif self.save and self.filepath is not None:
@@ -202,20 +202,45 @@ class Crawl():
         # Creates a new dataframe and filters relevant columns
         yf_df = df.reset_index()
         data_df = yf_df[['Date', 'Close']]
+        data_df = data_df.tail(RECOMMENDED_NO_OF_DAYS)
 
         # Changes the index using the Date column and drops the Date column
         # for no duplicates
         data_df.index = data_df['Date']
+        data_df.index = pd.to_datetime(data_df.index)
         data_df = data_df.drop('Date', axis=1)
 
         # Transform into a 1-D array and scales the data based on the scalar
         scaler = MinMaxScaler(feature_range=(0, 1))
         scaled_data = scaler.fit_transform(data_df)
 
-        scaled_data = np.reshape(
-            scaled_data, (scaled_data.shape[INDEX_ZERO],
-                          scaled_data.shape[INDEX_ONE], 1))
-        yhat = reconstructed_model.predict(scaled_data)
-        plt.plot(yhat)
+        inputs = data_df[len(data_df) - RECOMMENDED_NO_OF_DAYS:].values
+        inputs = inputs.reshape(-1, 1)
+        inputs = scaler.transform(inputs)
+
+        x_data = []
+        predicted_data = []
+        for index in range(inputs.shape[0]):
+            x_data.append(inputs[(index-RECOMMENDED_NO_OF_DAYS):
+                          RECOMMENDED_NO_OF_DAYS, 0])
+        x_data = np.array(x_data)
+
+        for index in range((x_data.shape[INDEX_ZERO]-1)):
+            temp_x_train = x_data[index]
+            reshaped_scaled_data = np.reshape(temp_x_train, (1,
+                                              temp_x_train.shape[INDEX_ZERO],
+                                              1))
+            yhat = reconstructed_model.predict(reshaped_scaled_data)
+            predicted_data.append(yhat)
+            x_data[index+1] = np.append(x_data[index+1], predicted_data)
+
+        predicted_data = np.array(predicted_data)
+        predicted_data = predicted_data.reshape(predicted_data.shape[0],
+                                                predicted_data.shape[1])
+
+        newdata_df = pd.DataFrame(predicted_data, columns=["Close"])
+        print(newdata_df)
+        final_data = data_df.append(newdata_df, ignore_index=True)
+        plt.plot(final_data)
         plt.show()
-        return yhat
+        return predicted_data
