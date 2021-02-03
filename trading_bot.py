@@ -1,5 +1,5 @@
 import argparse
-import Crawler.fpredict as fp
+import Crawler.model_dev.fpredict as fp
 import pandas as pd
 
 TIMECODES = ['1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']
@@ -30,10 +30,10 @@ def main():
     code, filename, time, model = parse_arguments()
     # Use CSV to retrieve info
     # df = pd.read_csv('LENDLEASE info max.csv')
-    # x = fp.Crawl(code, save=True, output_graph=False)
-    # x.model_dev()
-    x = fp.Crawl(code, model_name=model)
-    print(x.model_predict())
+    x = fp.Crawl(code, output_graph=True)
+    x.model_dev()
+    # x = fp.Crawl(code, model_name=model)
+    # print(x.model_predict())
 
 
 if __name__ == '__main__':

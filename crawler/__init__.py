@@ -1,9 +1,9 @@
-from . import fpredict
-from . import funcs
+from . import model_dev
+from . import utils
 
 __all__ = [
-    "fpredict",
-    "funcs"
+    "model_dev",
+    "utils"
 ]
 
 __version__ = "0.0.1"

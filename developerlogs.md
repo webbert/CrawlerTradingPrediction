@@ -131,3 +131,7 @@ After predicting that value. Add it to the next array to predict the next value.
 Fixed issue with predicting data.
 
 Need to recreate the model due to uncomplete data.
+
+## 3 Feb 2021
+
+Formatting and seperating the functions properly and making it look more professional and efficient
