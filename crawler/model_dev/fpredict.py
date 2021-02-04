@@ -76,8 +76,9 @@ class Crawl():
 
     def model_dev(self):
         self.Test_Method = TestMethod
-        self.Test_Method(self.yf_df, self.code, self.epochs, self.verbose,
-                         self.output_graph, self.save, self.filepath,
+        self.Test_Method(self.yf_df, self.yf_object, self.code, self.epochs,
+                         self.verbose, self.output_graph,
+                         self.save, self.filepath,
                          self.no_of_days)
 
     def model_predict(self):

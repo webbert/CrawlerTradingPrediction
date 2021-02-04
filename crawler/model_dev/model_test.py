@@ -2,11 +2,12 @@ import os
 # switch off tensorflow warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = "3"
 from ..utils.funcs import create_features, isleak, create_data
+from ..utils import errors
+from .model_create import CreateModel
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from keras.callbacks import ModelCheckpoint
 from keras.layers import Dense, LSTM, Dropout
 from keras.models import Sequential, load_model
-from ..utils import errors
 import matplotlib.pyplot as plt
 import numpy as np
 import string
@@ -22,9 +23,11 @@ KEYS = ['longName', 'symbol', 'sector', 'website', 'currency', 'previousClose',
 
 
 class TestMethod():
-    def __init__(self, yf_df, code, epochs, verbose, output_graph, save, filepath,
+    def __init__(self, yf_df, yf_object, code, epochs, verbose, output_graph, 
+                 save, filepath,
                  no_of_days):
         self.yf_df = yf_df
+        self.yf_object = yf_object
         self.code = code
         self.epochs = epochs
         self.verbose = verbose
@@ -148,11 +151,9 @@ class TestMethod():
                             self.code)
 
         # Saves the model
-        if self.save and self.filepath is None:
-            current_filepath = os.getcwd() + f"\\{self.code}_model"
-            model.save(current_filepath)
-            print(f"Saved model at {current_filepath}.")
-        elif self.save and self.filepath is not None:
-            model.save(self.filepath)
-            print(f"Saved model at {self.filepath}.")
+        if self.save:
+            print("Creating Model")
+            CreateModel(self.yf_df, self.code, self.filepath, self.no_of_days,
+                        self.epochs, self.verbose)
+
         return self.__repr__

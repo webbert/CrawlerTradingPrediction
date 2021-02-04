@@ -135,3 +135,11 @@ Need to recreate the model due to uncomplete data.
 ## 3 Feb 2021
 
 Formatting and seperating the functions properly and making it look more professional and efficient
+
+## 4 Feb 2021
+
+Create new save feature for models. Created in seperate file model_create.py.
+
+Need to fix the save path for model
+
+Need to test model against real data
