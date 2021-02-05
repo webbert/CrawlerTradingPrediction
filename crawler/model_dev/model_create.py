@@ -44,8 +44,10 @@ class CreateModel():
         # Transform into a 1-D array and scales the data based on the scalar
         scaler = MinMaxScaler(feature_range=(0, 1))
         scaled_data = scaler.fit_transform(data_df)
+
+        np_data = np.array(data_df)
         train_data = np.reshape(
-            scaled_data, (scaled_data.shape[INDEX_ZERO], -1))
+            np_data, (np_data.shape[INDEX_ZERO], -1))
         x_train, y_train = create_data(
             train_data, no_of_days)
         x_train = np.reshape(

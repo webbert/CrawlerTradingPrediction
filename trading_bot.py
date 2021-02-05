@@ -30,10 +30,10 @@ def main():
     code, filename, time, model = parse_arguments()
     # Use CSV to retrieve info
     # df = pd.read_csv('LENDLEASE info max.csv')
-    x = fp.Crawl(code, save=True, output_graph=False)
-    x.model_dev()
-    # x = fp.Crawl(code, model_name=model)
-    # print(x.model_predict())
+    # crawler_object = fp.Crawl(code, save=True)
+    # crawler_object.model_dev()
+    x = fp.Crawl(code, model_name=model)
+    print(x.model_predict())
 
 
 if __name__ == '__main__':

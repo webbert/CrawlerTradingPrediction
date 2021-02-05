@@ -143,3 +143,7 @@ Create new save feature for models. Created in seperate file model_create.py.
 Need to fix the save path for model
 
 Need to test model against real data
+
+## 5 Feb 2021
+
+Completed the base prediction and model creation features for Crawler.

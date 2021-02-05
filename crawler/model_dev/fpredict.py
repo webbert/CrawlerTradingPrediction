@@ -37,7 +37,7 @@ class Crawl():
                  model_name=None,
                  timespan=TIMECODES[8],
                  save=False, verbose=0, output_graph=True, filepath=None,
-                 epochs=50):
+                 epochs=1):
         try:
             # Time span check
             if timespan not in TIMECODES:
@@ -81,7 +81,16 @@ class Crawl():
                          self.save, self.filepath,
                          self.no_of_days)
 
-    def model_predict(self):
+    def model_predict(self, value=2):
+        """Predicts data based on saved model
+
+        Args:
+            value (int, optional): Number of days to be predicted. Defaults to 1.
+
+        Returns:
+            List: Predicted values based on the value
+        """
+        self.value = value
         # Error need to reconstruct data format take in date and Close only
         reconstructed_model = load_model(self.model_name)
         self.reconstructed_model = reconstructed_model
@@ -108,26 +117,34 @@ class Crawl():
 
         x_data = []
         predicted_data = []
-        for index in range(inputs.shape[0]):
-            x_data.append(inputs[(index-RECOMMENDED_NO_OF_DAYS):
-                          RECOMMENDED_NO_OF_DAYS, 0])
+        for index in range(value):
+            x_data.append(inputs[(index-int(inputs.shape[0])):
+                          int(inputs.shape[0]), 0])
         x_data = np.array(x_data)
 
-        for index in range((x_data.shape[INDEX_ZERO]-1)):
+        for index in range(value):
             temp_x_train = x_data[index]
             reshaped_scaled_data = np.reshape(temp_x_train, (1,
                                               temp_x_train.shape[INDEX_ZERO],
                                               1))
             yhat = reconstructed_model.predict(reshaped_scaled_data)
-            predicted_data.append(yhat)
-            x_data[index+1] = np.append(x_data[index+1], predicted_data)
-
-        predicted_data = np.array(predicted_data)
-        predicted_data = predicted_data.reshape(predicted_data.shape[0],
-                                                predicted_data.shape[1])
+            yhat = np.array(yhat)
+            yhat = scaler.inverse_transform(yhat)
+            print(yhat[0][0])
+            predicted_data.append(yhat[0][0])
+            if (value - 1) == index:
+                break
+            else:
+                x_data[index+1] = np.append(x_data[index+1], predicted_data)
 
         newdata_df = pd.DataFrame(predicted_data, columns=["Close"])
         final_data = data_df.append(newdata_df, ignore_index=True)
-        plt.plot(final_data)
+        plt.title(f"Predictions\nCode: {self.code}")
+        plt.plot(final_data[:RECOMMENDED_NO_OF_DAYS], label="Data")
+        plt.plot(final_data[RECOMMENDED_NO_OF_DAYS:], label="Predicted")
+        plt.xlabel('Index')
+        plt.ylabel('Closing Price')
+        plt.legend()
+        print("Opening Predicted Graph. Close the Graph to Continue.")
         plt.show()
-        return predicted_data
+        return f"{predicted_data}"
